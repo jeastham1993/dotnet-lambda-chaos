@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetChaosLambda", "DotnetChaosLambda\DotnetChaosLambda.csproj", "{FDA211B4-12C6-4771-9691-0BA0640B0D7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetChaosLambda", "src\DotnetChaosLambda\DotnetChaosLambda.csproj", "{FDA211B4-12C6-4771-9691-0BA0640B0D7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetChaosLambda.UnitTest", "DotnetChaosLambda.UnitTest\DotnetChaosLambda.UnitTest.csproj", "{E13E4CBE-3580-4CFF-A956-BE3493CBDCCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetChaosLambda.UnitTest", "src\DotnetChaosLambda.UnitTest\DotnetChaosLambda.UnitTest.csproj", "{E13E4CBE-3580-4CFF-A956-BE3493CBDCCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetChaosLambda.FunctionTest", "DotnetChaosLambda.FunctionTest\DotnetChaosLambda.FunctionTest.csproj", "{20585054-B933-48DF-B5C0-CF37AE2588EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetChaosLambda.FunctionTest", "example\DotnetChaosLambda.FunctionTest\DotnetChaosLambda.FunctionTest.csproj", "{20585054-B933-48DF-B5C0-CF37AE2588EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B7763DCE-4EF5-4995-8B9B-1990E0383662}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{10BF153A-3DFD-4798-86BE-3367AE559483}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +34,10 @@ Global
 		{20585054-B933-48DF-B5C0-CF37AE2588EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20585054-B933-48DF-B5C0-CF37AE2588EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20585054-B933-48DF-B5C0-CF37AE2588EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FDA211B4-12C6-4771-9691-0BA0640B0D7C} = {B7763DCE-4EF5-4995-8B9B-1990E0383662}
+		{E13E4CBE-3580-4CFF-A956-BE3493CBDCCD} = {B7763DCE-4EF5-4995-8B9B-1990E0383662}
+		{20585054-B933-48DF-B5C0-CF37AE2588EE} = {10BF153A-3DFD-4798-86BE-3367AE559483}
 	EndGlobalSection
 EndGlobal

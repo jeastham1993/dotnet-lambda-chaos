@@ -19,7 +19,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DotnetChaosLambda\DotnetChaosLambda.csproj" />
+    <ProjectReference Include="..\..\src\DotnetChaosLambda\DotnetChaosLambda.csproj" />
   </ItemGroup>
 
 </Project>
