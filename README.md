@@ -25,8 +25,17 @@ var chaos = new LambdaChaos();
 await this._chaos.ExecuteChaos();
 ```
 
+An example Lambda function and SAM template can be found under the [example](./example) directory. To deploy into your own AWS account:
+
+``` bash
+cd example
+sam build
+sam deploy --guided
+```
+
 ## Roadmap
 
+- Update configuration to be pulled from SSM Parameter Store
 - Add C# source generator support for simplified configuration
 - Force Lambda to return a specific status code
 
