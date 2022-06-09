@@ -6,7 +6,9 @@ Inspired by the [aws-lambda-layer-chaos-injection repo](https://github.com/adhor
 
 ## Usage
 
-Currently chaos is configured using an environment variable against the Lambda function itself. The configuration uses the JSON format specific below and should be added to a variables named CHAOS_PARAM
+Chaos is configured using a JSON object stored as an SSM Parameter. At runtime the SSM Parameter is retrieved and cached in the Lambda execution environment. The time to live (TTL) of the cached configuration can also be configured. After TTL expiry an API call will be made to SSM to retrieve the latest parameter version.
+
+The SSM parameter should be in the below format:
 
 ``` json
 {	
@@ -14,8 +16,58 @@ Currently chaos is configured using an environment variable against the Lambda f
 	"Delay": 400, // Used if the fault type is set to latency. The ms delay to add
 	"IsEnabled": true, // Enable or disable the chaos
 	"ExceptionMsg": "chaos", // Used if the fault type is set to exception. The error message to return.
-	"Rate": 1 // A value between 0 and 1, determines how often chaos will be induced. 0.2 = 20% of invokes
+	"Rate": 1, // A value between 0 and 1, determines how often chaos will be induced. 0.2 = 20% of invokes
+	"CacheTTL" : 30 // The number of seconds to cache the configuration for. Default is 60 seconds.
 }
+```
+
+Your Lambda function also needs to have permission to retrieve the configuration value. If you are using AWS SAM for deployment this can be provided using the below policy template
+
+``` yaml
+ChaosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+	...
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: <Your parameter name>
+```
+
+If you are not using AWS SAM, the below IAM permissions are required:
+
+``` json
+{
+    "Statement": [
+        {
+            "Action": [
+                "ssm:DescribeParameters"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParametersByPath"
+            ],
+            "Resource": <PARAMETER_ARN>,
+            "Effect": "Allow"
+        }
+    ]
+}
+```
+
+The name of the SSM parameter needs to be provided to your Lambda function as an environment variable.
+
+``` yaml
+ChaosFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      ...
+      Environment:
+        Variables:
+          CHAOS_PARAM: SSM_PARAMETER_NAME
 ```
 
 To trigger chaos in your function, add the below to your function handler. The LambdaChaos class could also be initialized from your function constructor.
