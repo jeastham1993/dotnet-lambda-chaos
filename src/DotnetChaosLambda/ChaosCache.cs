@@ -8,6 +8,7 @@ namespace DotnetChaosLambda;
 public class ChaosCache
 {
     private ChaosConfig? _config;
+    private readonly bool _skipCacheRefresh = false;
     private DateTime _lastLoad;
     private readonly AmazonSimpleSystemsManagementClient _ssmClient;
 
@@ -15,6 +16,13 @@ public class ChaosCache
     {
         this._ssmClient = new AmazonSimpleSystemsManagementClient();
         this.loadConfig().Wait();
+    }
+
+    internal ChaosCache(ChaosConfig config)
+    {
+        this._config = config;
+        this._skipCacheRefresh = true;
+        this._ssmClient = new AmazonSimpleSystemsManagementClient();
     }
 
     public async Task<ChaosConfig?> GetConfig()
@@ -45,7 +53,7 @@ public class ChaosCache
     {
         try
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CHAOS_PARAM")))
+            if (this._skipCacheRefresh || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CHAOS_PARAM")))
             {
                 return;
             }

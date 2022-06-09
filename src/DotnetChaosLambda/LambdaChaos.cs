@@ -17,6 +17,12 @@ public class LambdaChaos
         this._rateLimiter = new RateLimiter();
     }
 
+    internal LambdaChaos(ChaosConfig config)
+    {
+        this._rateLimiter = new RateLimiter();
+        this._cache = new ChaosCache(config);
+    }
+
     /// <summary>
     /// Unleash chaos on your Lambda function. On invoke the chaos configuration will be loaded
     /// from SSM Parameter Store and cached. The TTL of the cache can be configured as part of the
