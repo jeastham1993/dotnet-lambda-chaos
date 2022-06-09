@@ -20,13 +20,24 @@ Resources:
       MemorySize: 512
       Environment:
         Variables:
-          CHAOS_PARAM: "{	\"FaultType\": \"exception\",	\"Delay\": 400,	\"IsEnabled\": true,	\"ErrorCode\": 404,	\"ExceptionMsg\": \"chaos\",	\"Rate\": 1 }"
+          CHAOS_PARAM: !Ref ChaosParameter
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: !Ref ChaosParameter
       Events:
         HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /chaos
             Method: get
+            
+  ChaosParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: command
+      Type: String
+      Value: "{	\"FaultType\": \"exception\",	\"Delay\": 400,	\"IsEnabled\": true,	\"ErrorCode\": 404,	\"ExceptionMsg\": \"chaos\",	\"Rate\": 0.5,	\"CacheTTL\": 5 }"
+      Description: SSM Parameter for chaos configuration
 
 Outputs:
   HelloWorldApi:

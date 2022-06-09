@@ -23,7 +23,7 @@ namespace DotnetChaosLambda.FunctionTest
         
         public async Task<APIGatewayProxyResponse> LambdaHandler(APIGatewayProxyRequest evt, ILambdaContext context)
         {
-            await this._chaos.ExecuteChaos();
+            await this._chaos.UnleashChaos();
             
             var responseHeaders = new Dictionary<string, string>()
             {

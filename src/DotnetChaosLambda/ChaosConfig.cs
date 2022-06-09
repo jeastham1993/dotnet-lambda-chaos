@@ -3,6 +3,13 @@
 namespace DotnetChaosLambda;
 public class ChaosConfig
 {
+    public ChaosConfig()
+    {
+        this.FaultType = string.Empty;
+        this.ExceptionMsg = string.Empty;
+        this.CacheTTL = TimeSpan.FromMinutes(1).TotalSeconds;
+    }
+    
     public string FaultType { get; set; }
     
     public int Delay { get; set; }
@@ -14,6 +21,8 @@ public class ChaosConfig
     public string ExceptionMsg { get; set; }
     
     public double Rate { get; set; }
+    
+    public double CacheTTL { get; set; }
 
     public override string ToString()
     {

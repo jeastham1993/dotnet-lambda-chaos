@@ -16,7 +16,7 @@ public class ChaosTesting
 
         var startTime = DateTime.Now;
 
-        await wrapper.ExecuteChaos();
+        await wrapper.UnleashChaos();
         
         var endTime = DateTime.Now;
 
@@ -43,7 +43,7 @@ public class ChaosTesting
         {   
             var startTime = DateTime.Now;
 
-            await wrapper.ExecuteChaos();
+            await wrapper.UnleashChaos();
         
             var endTime = DateTime.Now;
 
@@ -77,7 +77,7 @@ public class ChaosTesting
 
             try
             {
-                await wrapper.ExecuteChaos();
+                await wrapper.UnleashChaos();
             }
             catch (Exception)
             {

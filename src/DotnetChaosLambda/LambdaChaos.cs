@@ -1,95 +1,84 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net;
+using System.Security.Cryptography;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
 
 namespace DotnetChaosLambda;
 
 public class LambdaChaos
 {
-    private readonly Random _random;
-    private ChaosConfig _config;
-    
+    private readonly ChaosCache _cache;
+    private readonly RateLimiter _rateLimiter;
+
     public LambdaChaos()
     {
-        this._random = new Random(DateTime.Now.Second);
+        this._cache = new ChaosCache();
+        this._rateLimiter = new RateLimiter();
     }
 
-    public LambdaChaos(ChaosConfig init)
+    /// <summary>
+    /// Unleash chaos on your Lambda function. On invoke the chaos configuration will be loaded
+    /// from SSM Parameter Store and cached. The TTL of the cache can be configured as part of the
+    /// cache config using the CacheTTL property.
+    /// </summary>
+    public async Task UnleashChaos()
     {
-        this._random = new Random(DateTime.Now.Second);
-        this._config = init;
-    }
-    
-    public async Task ExecuteChaos()
-    {
-        this.loadConfig();
+        var config = await this._cache.GetConfig();
+        
+        if (config == null)
+        {
+            return;
+        }
 
-        if (this._config == null)
+        if (config.IsEnabled == false)
         {
             return;
         }
         
-        Console.WriteLine($"Got chaos config: {this._config}");
+        Console.WriteLine($"Got chaos config: {config}");
 
-        switch (this._config.FaultType)
+        switch (config.FaultType)
         {
             case "latency":
-                await this.addLatency();
+                await this.AddLatency(config);
                 return;
             case "exception":
-                await this.addError();
+                this.AddError(config);
                 return;
         }
     }
     
-    private async Task addError()
+    private void AddError(ChaosConfig config)
     {
         Console.WriteLine($"Injecting error");
 
-        if (string.IsNullOrEmpty(this._config.ExceptionMsg) || this._config.Rate <= 0)
+        if (string.IsNullOrEmpty(config.ExceptionMsg) || config.Rate <= 0)
         {
             return;
         }
 
-        var nextValue = this._random.NextDouble();
-        
-        Console.WriteLine($"Rate limiter is {nextValue}, rate is set to {this._config.Rate}");
-
-        if (nextValue < this._config.Rate)
+        if (this._rateLimiter.ShouldExecuteFor(config))
         {
-            throw new Exception(this._config.ExceptionMsg);
+            throw new Exception(config.ExceptionMsg);
         }
     }
 
-    private async Task addLatency()
+    private async Task AddLatency(ChaosConfig config)
     {
-        Console.WriteLine($"Injecting latency of {this._config.Delay}");
+        Console.WriteLine($"Injecting latency of {config.Delay}");
 
-        if (this._config.Delay <= 0 || this._config.Rate <= 0)
+        if (config.Delay <= 0 || config.Rate <= 0)
         {
             return;
         }
 
-        var nextValue = this._random.NextDouble();
-        
-        Console.WriteLine($"Random number is {nextValue}, rate is set to {this._config.Rate}");
-
-        if (nextValue < this._config.Rate)
+        if (this._rateLimiter.ShouldExecuteFor(config))
         {
             Console.WriteLine("Sleeping now");
-            await Task.Delay(this._config.Delay);
+            await Task.Delay(config.Delay);
         }
 
         Console.WriteLine("Sleep complete");
-    }
-
-    private void loadConfig()
-    {
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CHAOS_PARAM")))
-        {
-            return;
-        }
-
-        this._config = JsonSerializer.Deserialize<ChaosConfig>(Environment.GetEnvironmentVariable("CHAOS_PARAM"));
     }
 }
