@@ -35,7 +35,8 @@ sam deploy --guided
 
 ## Roadmap
 
-- Update configuration to be pulled from SSM Parameter Store
+- ~~Update configuration to be pulled from SSM Parameter Store~~
+- ~~Cache configuration to reduce overhead and API calls to SSM parameter store~~
 - Add C# source generator support for simplified configuration
 - Force Lambda to return a specific status code
 
