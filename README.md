@@ -77,6 +77,8 @@ var chaos = new LambdaChaos();
 await this._chaos.ExecuteChaos();
 ```
 
+## Example
+
 An example Lambda function and SAM template can be found under the [example](./example) directory. To deploy into your own AWS account:
 
 ``` bash
