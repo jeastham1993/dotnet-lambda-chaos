@@ -39,3 +39,9 @@ sam deploy --guided
 - Add C# source generator support for simplified configuration
 - Force Lambda to return a specific status code
 
+## Show your support
+Give a ⭐️ if this project helped you!
+
+## License
+
+This library is licensed under the MIT-0 License. See the LICENSE file.
